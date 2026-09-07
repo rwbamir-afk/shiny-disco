@@ -40,7 +40,9 @@ export class GameSocket {
         .replace(/^https:/, "wss:")
         .replace(/^http:/, "ws:");
     } else {
-      const scheme = location.protocol === "https:" ? "wss" : "ws";
+      const scheme =
+        location.protocol === "https:" ? "wss" : "ws";
+
       wsBase = `${scheme}://${location.host}`;
     }
 
@@ -67,7 +69,7 @@ export class GameSocket {
           handler(msg);
         });
       } catch {
-        // Ignore malformed WebSocket frames.
+        // Ignore malformed frames.
       }
     };
 
@@ -101,6 +103,53 @@ export class GameSocket {
       game_id: gameId,
     });
   }
+
+  sendAction(
+    gameId: string,
+    action: {
+      type: string;
+      card?: string;
+      trump?: string;
+      request_id: string;
+    },
+  ): void {
+    this.send({
+      type: "game.action",
+      game_id: gameId,
+      action,
+    });
+  }
+
+  private send(payload: unknown): void {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify(payload));
+    }
+  }
+
+  private startPing(): void {
+    this.stopPing();
+
+    this.pingTimer = window.setInterval(() => {
+      this.send({
+        type: "ping",
+        ts: Date.now(),
+      });
+    }, 25000);
+  }
+
+  private stopPing(): void {
+    if (this.pingTimer !== null) {
+      clearInterval(this.pingTimer);
+      this.pingTimer = null;
+    }
+  }
+
+  close(): void {
+    this.closed = true;
+    this.stopPing();
+    this.ws?.close();
+  }
+}  }
 
   sendAction(
     gameId: string,
