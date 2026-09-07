@@ -4,6 +4,7 @@
  * The server is the source of truth. This client only subscribes and sends
  * typed commands; it never reconstructs authoritative state from cached data.
  */
+
 import type { WsMessage } from "./contracts";
 
 type Handler = (msg: WsMessage) => void;
@@ -28,53 +29,93 @@ export class GameSocket {
 
   connect(): void {
     this.closed = false;
-    // Derive the WS URL from the API base (a different domain than the
-    // static frontend), not from location.host, which would point at the
-    // frontend's own domain and never reach the backend.
-    const apiBase = (import.meta.env?.VITE_API_URL as string | undefined) ?? "";
+
+    const apiBase =
+      (import.meta.env?.VITE_API_URL as string | undefined) ?? "";
+
     let wsBase: string;
+
     if (apiBase) {
-      wsBase = apiBase.replace(/^https:/, "wss:").replace(/^http:/, "ws:");
+      wsBase = apiBase
+        .replace(/^https:/, "wss:")
+        .replace(/^http:/, "ws:");
     } else {
       const scheme = location.protocol === "https:" ? "wss" : "ws";
       wsBase = `${scheme}://${location.host}`;
     }
-    const url = `${wsBase}/ws?token=${encodeURIComponent(this.token)}`;
+
+    const url =
+      `${wsBase}/ws?token=${encodeURIComponent(this.token)}`;
+
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => {
       this.retries = 0;
-      if (this.gameId) this.subscribe(this.gameId);
+
+      if (this.gameId) {
+        this.subscribe(this.gameId);
+      }
+
       this.startPing();
     };
+
     this.ws.onmessage = (ev) => {
       try {
         const msg = JSON.parse(ev.data) as WsMessage;
-        this.handlers.forEach((h) => h(msg));
+
+        this.handlers.forEach((handler) => {
+          handler(msg);
+        });
       } catch {
-        /* ignore malformed frames */
+        // Ignore malformed WebSocket frames.
       }
     };
+
     this.ws.onclose = () => {
       this.stopPing();
+
       if (!this.closed) {
-        const backoff = Math.min(2000, 300 * 2 ** this.retries);
+        const backoff = Math.min(
+          2000,
+          300 * 2 ** this.retries,
+        );
+
         this.retries += 1;
-        setTimeout(() => this.connect(), backoff);
+
+        setTimeout(() => {
+          this.connect();
+        }, backoff);
       }
     };
+
     this.ws.onerror = () => {
-      /* handled by onclose */
+      // Connection errors are handled by onclose.
     };
   }
 
   subscribe(gameId: string): void {
     this.gameId = gameId;
-    this.send({ type: "subscribe", game_id: gameId });
+
+    this.send({
+      type: "subscribe",
+      game_id: gameId,
+    });
   }
 
-  sendAction(gameId: string, action: { type: string; card?: string; trump?: string; request_id: string }): void {
-    this.send({ type: "game.action", game_id: gameId, action });
+  sendAction(
+    gameId: string,
+    action: {
+      type: string;
+      card?: string;
+      trump?: string;
+      request_id: string;
+    },
+  ): void {
+    this.send({
+      type: "game.action",
+      game_id: gameId,
+      action,
+    });
   }
 
   private send(payload: unknown): void {
@@ -85,7 +126,13 @@ export class GameSocket {
 
   private startPing(): void {
     this.stopPing();
-    this.pingTimer = window.setInterval(() => this.send({ type: "ping", ts: Date.now() }), 25000);
+
+    this.pingTimer = window.setInterval(() => {
+      this.send({
+        type: "ping",
+        ts: Date.now(),
+      });
+    }, 25000);
   }
 
   private stopPing(): void {
@@ -100,4 +147,4 @@ export class GameSocket {
     this.stopPing();
     this.ws?.close();
   }
-}
+}}
