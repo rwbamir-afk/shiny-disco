@@ -1,0 +1,56 @@
+volumes:
+  pgdata:
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: hokm
+      POSTGRES_USER: hokm
+      POSTGRES_PASSWORD: ${HOKM_DB_PASSWORD:-hokm-dev}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hokm"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/backend.Dockerfile
+    environment:
+      HOKM_ENVIRONMENT: prod
+      HOKM_DATABASE_URL: postgresql+asyncpg://hokm:${HOKM_DB_PASSWORD:-hokm-dev}@db:5432/hokm
+      HOKM_REDIS_URL: redis://redis:6379/0
+      HOKM_TELEGRAM_BOT_TOKEN: ${HOKM_TELEGRAM_BOT_TOKEN}
+      HOKM_JWT_SECRET: ${HOKM_JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  # Optional: serve the built Mini App.
+  miniapp:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/miniapp.Dockerfile
+      args:
+        VITE_API_URL: https://api.example.com
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

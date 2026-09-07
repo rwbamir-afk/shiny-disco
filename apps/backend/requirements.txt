@@ -1,0 +1,11 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+alembic>=1.13
+aiosqlite>=0.20
+asyncpg>=0.29
+redis>=5
+pydantic>=2.7
+pydantic-settings>=2.3
+python-multipart
+pyjwt>=2.8

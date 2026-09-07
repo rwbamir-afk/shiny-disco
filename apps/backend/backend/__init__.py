@@ -1,0 +1,1 @@
+"""Hokm Platform backend."""

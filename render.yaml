@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: hokm-backend
+    runtime: python
+    plan: free
+    rootDir: apps/backend
+    buildCommand: pip install -r requirements.txt && pip install -e ../../packages/game-engine
+    startCommand: alembic upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: HOKM_ENVIRONMENT
+        value: prod
+      - key: HOKM_DATABASE_URL
+        fromDatabase:
+          name: hokm-db
+          property: connectionString
+      - key: HOKM_USE_REDIS
+        value: "false"
+      - key: HOKM_JWT_SECRET
+        generateValue: true
+      - key: HOKM_TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: HOKM_TELEGRAM_BOT_USERNAME
+        sync: false
+      - key: HOKM_TELEGRAM_MINI_APP_SHORT_NAME
+        sync: false
+      - key: HOKM_TELEGRAM_PAYMENT_WEBHOOK_SECRET
+        sync: false
+      - key: HOKM_CORS_ORIGINS
+        value: "*"
+
+  - type: web
+    name: hokm-mini-app
+    runtime: static
+    rootDir: apps/mini-app
+    buildCommand: npm ci && npm run typecheck && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: hokm-backend
+          property: host
+          prefix: https://
+
+databases:
+  - name: hokm-db
+    plan: free
+    databaseName: hokm
+    user: hokm

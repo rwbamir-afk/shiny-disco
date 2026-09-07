@@ -1,0 +1,309 @@
+/* ============================================================================
+   HOKM — "کاشی" (Kāshi / Tilework) Iranian design system
+   Persian-turquoise + royal lapis + saffron gold, girih-pattern accents,
+   inspired by traditional Iranian tilework (کاشی‌کاری) and miniature painting.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800;900&display=swap');
+
+:root {
+  /* Core palette — Persian tilework */
+  --lapis: #0f3d5c;          /* deep Persian/lapis blue — base ink */
+  --lapis-2: #123f66;
+  --turquoise: #1a9e96;      /* فیروزه‌ای — Persian turquoise, primary accent */
+  --turquoise-deep: #0d6e6a;
+  --saffron: #e0a72e;        /* زعفرانی — gold/saffron, highlight & trump */
+  --saffron-deep: #b9841f;
+  --terracotta: #c1502e;     /* سفال — warm accent for team B / alerts */
+  --rose: #b23a55;           /* گلی — accent red-pink, danger */
+
+  --paper: #fbf6ea;          /* warm cream — like aged manuscript paper */
+  --paper-2: #f1e6cd;
+  --ink: #142a34;
+  --ink-soft: #4b6470;
+  --line: #d8c9a3;
+
+  --accent: var(--saffron);
+  --accent-ink: #1c1204;
+  --team-a: var(--turquoise-deep);
+  --team-b: var(--lapis);
+  --good: #1f7a4c;
+  --bad: var(--rose);
+
+  --radius: 14px;
+  --radius-sm: 9px;
+  --shadow: 0 3px 0 rgba(15, 61, 92, 0.85);
+  --font: "Vazirmatn", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body, #root { margin: 0; height: 100%; }
+
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(26, 158, 150, 0.10), transparent 60%),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.55;
+  overscroll-behavior: none;
+  user-select: none;
+}
+
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+.app {
+  display: flex; flex-direction: column; min-height: 100%;
+  max-width: 480px; margin: 0 auto; position: relative;
+}
+
+/* ------------------------------------------------ girih tile motif */
+/* Subtle repeating 8-point star / girih pattern, used as decorative bands */
+.girih {
+  background-image:
+    radial-gradient(circle at 10px 10px, rgba(26,158,150,0.16) 0 3px, transparent 3.5px),
+    radial-gradient(circle at 30px 30px, rgba(224,167,46,0.16) 0 3px, transparent 3.5px);
+  background-size: 40px 40px;
+}
+
+.hero-band {
+  padding: 22px 20px 26px;
+  background: linear-gradient(155deg, var(--lapis) 0%, var(--lapis-2) 55%, var(--turquoise-deep) 130%);
+  color: var(--paper);
+  border-bottom: 4px solid var(--saffron);
+  position: relative;
+  overflow: hidden;
+}
+.hero-band::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(45deg, rgba(224,167,46,0.10) 25%, transparent 25%, transparent 75%, rgba(224,167,46,0.10) 75%),
+    linear-gradient(45deg, rgba(224,167,46,0.10) 25%, transparent 25%, transparent 75%, rgba(224,167,46,0.10) 75%);
+  background-size: 34px 34px;
+  background-position: 0 0, 17px 17px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.hero-band > * { position: relative; z-index: 1; }
+
+/* ------------------------------------------------ typography */
+h1, h2, h3 { margin: 0; font-weight: 800; letter-spacing: -0.01em; }
+.display { font-size: 36px; line-height: 1.15; font-weight: 900; color: var(--saffron); text-shadow: 0 2px 0 rgba(15,42,52,0.35); }
+.section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-soft); font-weight: 700; }
+
+/* ------------------------------------------------ buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 52px; padding: 0 20px; border: 2px solid var(--lapis); border-radius: var(--radius);
+  background: var(--paper); color: var(--lapis); font-weight: 700; font-size: 16px;
+  box-shadow: var(--shadow); transition: transform 0.06s ease, background 0.12s ease;
+}
+.btn:active { transform: translateY(2px); box-shadow: none; }
+.btn.primary {
+  background: linear-gradient(180deg, var(--saffron) 0%, var(--saffron-deep) 100%);
+  color: var(--accent-ink); border-color: var(--saffron-deep);
+}
+.btn.secondary {
+  background: linear-gradient(180deg, var(--turquoise) 0%, var(--turquoise-deep) 100%);
+  color: #fff; border-color: var(--turquoise-deep);
+}
+.btn.ghost { background: transparent; box-shadow: none; border-color: var(--line); color: var(--ink-soft); }
+.btn.block { width: 100%; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.icon { min-height: 40px; min-width: 40px; padding: 0; }
+
+/* ------------------------------------------------ cards / surfaces */
+.panel {
+  background: var(--paper-2);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px rgba(224,167,46,0.15);
+}
+.pad { padding: 20px; }
+
+.divider {
+  height: 3px; border: none; margin: 16px 0;
+  background: repeating-linear-gradient(90deg, var(--turquoise) 0 8px, var(--saffron) 8px 16px);
+  opacity: 0.5; border-radius: 2px;
+}
+
+.badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; border: 2px solid var(--turquoise-deep);
+  background: var(--paper); color: var(--turquoise-deep);
+}
+.badge.gold { border-color: var(--saffron-deep); color: var(--saffron-deep); }
+
+/* ------------------------------------------------ playing card */
+.pcard {
+  position: relative; width: 58px; height: 84px; border-radius: 9px;
+  background: #fffdf6; border: 2px solid var(--lapis);
+  display: inline-flex; flex-direction: column; justify-content: space-between;
+  padding: 5px; font-weight: 800; box-shadow: 0 2px 0 rgba(15,42,52,0.5);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.pcard .rank { font-size: 16px; line-height: 1; }
+.pcard .suit { font-size: 18px; line-height: 1; }
+.pcard.red { color: var(--rose); }
+.pcard.black { color: var(--lapis); }
+.pcard.center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 20px; }
+.pcard.selected { transform: translateY(-10px); box-shadow: 0 6px 0 rgba(15,42,52,0.6), 0 0 0 3px var(--saffron); }
+.pcard.illegal { opacity: 0.4; }
+.pcard.played { border-color: var(--line); color: var(--ink-soft); box-shadow: none; }
+
+/* ------------------------------------------------ layout helpers */
+.row { display: flex; align-items: center; gap: 10px; }
+.col { display: flex; flex-direction: column; gap: 10px; }
+.grow { flex: 1; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.mt { margin-top: 12px; } .mb { margin-bottom: 12px; }
+
+/* ------------------------------------------------ game table */
+.tablerow {
+  position: relative; border-top: 3px solid var(--turquoise);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: linear-gradient(180deg, transparent, rgba(26,158,150,0.06));
+}
+.hand { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 12px 16px 18px; }
+.trickzone {
+  min-height: 104px; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 8px;
+  background: radial-gradient(circle, rgba(224,167,46,0.10), transparent 70%);
+}
+.seatrow { display: flex; justify-content: space-between; padding: 8px 16px; }
+
+.scorebar {
+  display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+  background: var(--lapis); color: var(--paper); border-bottom: 3px solid var(--saffron);
+}
+.teamchip { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; }
+.team-A { color: var(--turquoise); } .team-B { color: var(--saffron); }
+.teamdot { width: 12px; height: 12px; border-radius: 3px; border: 2px solid currentColor; }
+.team-A .teamdot { background: var(--turquoise); } .team-B .teamdot { background: var(--saffron); }
+
+.timer { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 16px; color: var(--turquoise-deep); }
+.timer.low { color: var(--bad); }
+
+.trumpbar {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  background: var(--paper-2); border-bottom: 2px solid var(--line);
+}
+.hakem-tag {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px;
+  background: var(--saffron); color: var(--accent-ink); font-size: 11px; font-weight: 800;
+}
+
+.playerpill {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 10px;
+  border-radius: var(--radius-sm); border: 2px solid transparent;
+}
+.playerpill.current { background: var(--turquoise); color: #fff; border-color: var(--turquoise-deep); }
+.playerpill.partner { outline: 2px dashed var(--saffron); outline-offset: 2px; }
+.playerpill .name { font-weight: 700; font-size: 13px; max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.playerpill .count { font-size: 12px; opacity: 0.8; }
+.playerpill .hakem-star { color: var(--saffron); font-size: 14px; }
+
+/* ------------------------------------------------ status / empty / error */
+.status { padding: 14px 16px; border-radius: var(--radius); font-weight: 600; }
+.status.info { background: var(--paper-2); border: 2px solid var(--turquoise); color: var(--turquoise-deep); }
+.status.error { background: #f7dfe1; border: 2px solid var(--bad); color: var(--bad); }
+.status.good { background: #e2f2e7; border: 2px solid var(--good); color: var(--good); }
+
+.spinner {
+  width: 28px; height: 28px; border: 4px solid var(--line);
+  border-top-color: var(--turquoise); border-right-color: var(--saffron);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.navrow {
+  display: flex; gap: 8px; position: sticky; top: 0; z-index: 5;
+  background: var(--lapis); color: var(--paper); padding: 12px 16px;
+  border-bottom: 3px solid var(--saffron);
+}
+
+.suittabs { display: flex; gap: 8px; padding: 14px 16px; }
+.suittab {
+  flex: 1; min-height: 52px; border: 2px solid var(--lapis); border-radius: var(--radius-sm);
+  background: var(--paper); font-size: 22px; color: var(--lapis);
+}
+.suittab.active, .suittab:active {
+  background: linear-gradient(180deg, var(--saffron), var(--saffron-deep));
+  color: var(--accent-ink); border-color: var(--saffron-deep);
+}
+
+/* ------------------------------------------------ invite / copy */
+.invite-row {
+  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+  background: var(--paper); border: 2px dashed var(--turquoise); border-radius: var(--radius-sm);
+}
+.invite-code {
+  font-family: monospace; font-size: 18px; font-weight: 800; letter-spacing: 0.12em;
+  color: var(--lapis); flex: 1; text-align: center;
+}
+.copy-btn {
+  border: 2px solid var(--turquoise-deep); background: var(--turquoise); color: #fff;
+  border-radius: var(--radius-sm); min-height: 40px; padding: 0 14px; font-weight: 700; font-size: 13px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.copy-btn.copied { background: var(--good); border-color: var(--good); }
+
+
+.social-input { flex: 1; min-width: 0; min-height: 50px; border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--paper); color: var(--ink); padding: 0 12px; outline: none; }
+.social-input:focus { border-color: var(--turquoise); }
+.social-person { display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.social-person:last-child { border-bottom: 0; }
+.notice { padding: 10px 12px; border-right: 4px solid var(--saffron); background: var(--paper); border-radius: var(--radius-sm); }
+
+/* ------------------------------------------------ Phase 7: lightweight 3D table/card presentation */
+.game-screen { perspective: 1200px; }
+.table-3d-wrap { perspective: 900px; padding: 8px 12px 12px; }
+.table-3d {
+  min-height: 170px;
+  position: relative;
+  transform: rotateX(3deg);
+  transform-style: preserve-3d;
+  background:
+    radial-gradient(ellipse at center, rgba(26,158,150,.20), transparent 62%),
+    linear-gradient(145deg, rgba(15,61,92,.08), rgba(224,167,46,.08));
+  box-shadow: 0 16px 24px rgba(15,42,52,.18), inset 0 0 0 1px rgba(224,167,46,.20);
+}
+.table-3d::before {
+  content: "";
+  position: absolute; inset: 14px; border: 1px solid rgba(224,167,46,.32);
+  border-radius: 18px; transform: translateZ(-2px); pointer-events: none;
+}
+.pcard {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  overflow: hidden;
+}
+.pcard::before {
+  content: ""; position: absolute; inset: 3px; border: 1px solid rgba(224,167,46,.45);
+  border-radius: 6px; pointer-events: none;
+}
+.pcard::after {
+  content: ""; position: absolute; inset: 10px 8px; border: 1px solid rgba(26,158,150,.18);
+  border-radius: 50%; pointer-events: none;
+}
+.card-corner { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.card-corner-bottom { transform: rotate(180deg); }
+.card-medallion {
+  position: absolute; z-index: 1; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  font-size: 30px; opacity: .12;
+}
+.pcard:hover:not(:disabled) { transform: translateY(-5px) rotateX(2deg) rotateY(-2deg); }
+.pcard.selected { transform: translateY(-12px) rotateX(3deg); }
+.pcard.played { animation: card-land .22s ease-out both; }
+@keyframes card-land { from { opacity: .45; transform: translateY(-12px) rotateZ(-3deg) scale(.94); } to { opacity: 1; transform: translateY(0) rotateZ(0) scale(1); } }
+.trickzone .pcard { box-shadow: 0 8px 12px rgba(15,42,52,.22); }
+.suittab { transition: transform .12s ease, box-shadow .12s ease; }
+.suittab:active { transform: translateY(2px) scale(.98); box-shadow: inset 0 2px 5px rgba(15,42,52,.18); }
+.playerpill.current { animation: seat-pulse 1.4s ease-in-out infinite; }
+@keyframes seat-pulse { 50% { box-shadow: 0 0 0 4px rgba(224,167,46,.22); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
